@@ -1,0 +1,31 @@
+#include <iostream>
+#include <omp.h>
+#include <climits>
+using namespace std;
+
+int main() {
+    const int N = 256;
+    int data[N];
+    for (int i = 0; i < N; ++i)
+        data[i] = i + 1;
+
+    int minVal = INT_MAX;
+    int maxVal = INT_MIN;
+    int sum = 0;
+
+    #pragma omp parallel for reduction(min:minVal) reduction(max:maxVal) reduction(+:sum)
+    for (int i = 0; i < N; ++i) {
+        minVal = min(minVal, data[i]);
+        maxVal = max(maxVal, data[i]);
+        sum += data[i];
+    }
+
+    float avg = sum / (float)N;
+
+    cout << "Min: " << minVal << endl;
+    cout << "Max: " << maxVal << endl;
+    cout << "Sum: " << sum << endl;
+    cout << "Average: " << avg << endl;
+
+    return 0;
+}
